@@ -18,6 +18,24 @@ export default class Iphone extends Component {
 		this.state.temp = "";
 		// button display state
 		this.setState({ display: true });
+
+		navigator.geolocation.getCurrentPosition(
+			(pos) => {
+				var lat = parseFloat(pos.coords.latitude);
+				var long = parseFloat(pos.coords.longitude);
+
+				this.setState({lat: lat});
+				this.setState({long: long});
+			},
+			(error) => {
+				alert(JSON.stringify(error));
+			},
+			{
+				enableHighAccuracy: true,
+				timeout: 20000,
+				maximumAge: 1000
+			}
+		);
 	}
 
 	// a call to fetch weather data via wunderground
@@ -38,7 +56,7 @@ export default class Iphone extends Component {
 	render() {
 		// check if temperature data is fetched, if so add the sign styling to the page
 		const tempStyles = this.state.temp ? `${style.temperature} ${style.filled}` : style.temperature;
-		
+
 		// display all weather data
 		return (
 			<div class={ style.container }>
@@ -48,9 +66,11 @@ export default class Iphone extends Component {
 					<span class={ tempStyles }>{ this.state.temp }</span>
 				</div>
 				<div class={ style.details }></div>
-				<div class= { style_iphone.container }> 
+				<div class= { style_iphone.container }>
 					{ this.state.display ? <Button class={ style_iphone.button } clickFunction={ this.fetchWeatherData }/ > : null }
 				</div>
+
+				<p>{this.state.lat}, {this.state.long}</p>
 			</div>
 		);
 	}
@@ -65,6 +85,6 @@ export default class Iphone extends Component {
 			locate: location,
 			temp: temp_c,
 			cond : conditions
-		});      
+		});
 	}
 }
