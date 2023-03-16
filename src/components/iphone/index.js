@@ -15,6 +15,9 @@ export default class Iphone extends Component {
 	constructor(props){
 		super(props);
 		// temperature state
+
+
+
 		this.state.temp = "";
 		// button display state
 		this.setState({ display: true });
@@ -35,6 +38,7 @@ export default class Iphone extends Component {
 				timeout: 20000,
 				maximumAge: 1000
 			}
+			//test
 		);
 	}
 
