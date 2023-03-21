@@ -67,8 +67,6 @@ export default class Ipad extends Component {
 				<div class={ style_ipad.container }>
 					{ this.state.display ? <Button class={style_ipad.button} clickFunction={this.fetchWeatherData}></Button> : null }
 				</div>
-
-				<p>{this.state.lat}, {this.state.long}</p>
 			</div>
 		);
 	}

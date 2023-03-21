@@ -68,8 +68,6 @@ export default class Iphone extends Component {
 					{ this.state.display ? <Button class={style_iphone.button} clickFunction={this.fetchWeatherData}></Button>
 						: null }
 				</div>
-
-				<p>{this.state.lat}, {this.state.long}</p>
 			</div>
 		);
 	}
