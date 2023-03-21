@@ -15,46 +15,39 @@ export default class Iphone extends Component {
 	constructor(props){
 		super(props);
 		// temperature state
-//tesst
-
-
 
 		this.state.temp = "";
 		// button display state
 		this.setState({ display: true });
+	}
 
+	// a call to fetch weather data via wunderground
+	fetchWeatherData = () => {
 		navigator.geolocation.getCurrentPosition(
 			(pos) => {
-				const lat = parseFloat(pos.coords.latitude);
-				const long = parseFloat(pos.coords.longitude);
+				const long = pos.coords.longitude;
+				const lat = pos.coords.latitude;
+				const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&hourly=temperature_2m,relativehumidity_2m,precipitation_probability,precipitation,rain,showers,snowfall,weathercode,pressure_msl,cloudcover,visibility,windspeed_10m,temperature_80m&current_weather=true`;
 
-				this.setState({lat});
-				this.setState({long});
+				$.ajax({
+					url,
+					dataType: "json",
+					success: this.parseResponse,
+					error(req, err){ console.log('API call failed ' + err); }
+				});
+
+				// once the data grabbed, hide the button
+				this.setState({ display: false });
 			},
-			(error) => {
-				alert(JSON.stringify(error));
+			(err) => {
+				alert(JSON.stringify(err));
 			},
 			{
 				enableHighAccuracy: true,
 				timeout: 20000,
 				maximumAge: 1000
 			}
-			//test
 		);
-	}
-
-	// a call to fetch weather data via wunderground
-	fetchWeatherData = () => {
-		// API URL with a structure of : ttp://api.wunderground.com/api/key/feature/q/country-code/city.json
-		const url = "http://api.openweathermap.org/data/2.5/weather?q=London&units=metric&APPID=cf17e23b1d108b29a4d738d2084baf5";
-		$.ajax({
-			url,
-			dataType: "jsonp",
-			success : this.parseResponse,
-			error(req, err){ console.log('API call failed ' + err); }
-		});
-		// once the data grabbed, hide the button
-		this.setState({ display: false });
 	}
 
 	// the main render method for the iphone component
@@ -82,11 +75,20 @@ export default class Iphone extends Component {
 	}
 
 	parseResponse = (parsed_json) => {
-		let location = parsed_json['name'];
-		let temp_c = parsed_json['main']['temp'];
-		let conditions = parsed_json['weather']['0']['description'];
+		console.log(parsed_json);
 
-		// set states for fields so they could be rendered later on
+		let current = parsed_json['current_weather'];
+		let temp_c = current['temperature'];
+
+		let location = 'local';
+		let conditions = 'conditions';
+
+
+		//let location = parsed_json['name'];
+		//let temp_c = parsed_json['main']['temp'];
+		//let conditions = parsed_json['weather']['0']['description'];
+
+		/// set states for fields so they could be rendered later on
 		this.setState({
 			locate: location,
 			temp: temp_c,
